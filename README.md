@@ -8,5 +8,6 @@
             matplotlib 3.0.2,
             opencv-python 4.1.0.25
 ## unzip data.zip will acquire training data.
-    The data is divided into 2 parts, set the trigger '--dataset' in test.py to train it.
+    The data is divided into 2 parts, set the trigger '--dataset' in train.py and test.py to train or test it.
+    In a set of training folder, the train folder is for training, the val folder is for testing. 
 ## The value of the force and the visualization of it can be acquired at the same time by running test.py.
