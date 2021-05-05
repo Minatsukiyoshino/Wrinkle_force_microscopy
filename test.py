@@ -96,14 +96,12 @@ for iter in range(533):
     img_y = cv2.rotate(cv2.imread('D:/student/GAN4/wrinkle_to_force_1_results/test_results/force_y/' + "%04d.png" % (iter)), cv2.ROTATE_90_COUNTERCLOCKWISE)
     img_y = cv2.cvtColor(img_y, cv2.COLOR_BGR2GRAY)
     img_cell = cv2.imread('D:/student/GAN4/wrinkle_to_force_1_results/test_results/cell/' + "%04d.jpg" % (iter))
-
     #plt.imshow(img_cell)
     #plt.show()
     data_fx = np.array(cv2.resize(img_x, (26, 26)))
     img_cell = cv2.resize(img_cell, (900, 900))
     data_fy = np.array(cv2.resize(img_y, (26, 26)))
     #for j in range(26):
-
     x=[]
     y=[]
     fx=[]
@@ -113,17 +111,12 @@ for iter in range(533):
             for i in range(26):
                 x.append (32.0*i + 48.0)
                 y.append (32.0*j + 48.0)
-
                 gid = 26*j + i
-
                 tfx= calcForce(data_fx[j][i])
                 tfy= calcForce(data_fy[j][i])
-
                 fx.append (tfx)
                 fy.append (tfy)
                 fa.append (np.sqrt(tfx**2.0 + tfy**2.0))
-
-
     x  = np.array(x)
     y  = np.array(y)
     fx = np.array(fx)
@@ -149,15 +142,12 @@ for iter in range(533):
         'size'   : 20,
         }
     ax2 = cb.ax
-
     tick_locator = ticker.MaxNLocator(nbins=4)
     cb.locator = tick_locator
     cb.update_ticks()
     ax2.set_title('Pa',fontdict=font)
     plt.axis("off")
     fig.savefig("force/%d.png" %iter, format="png", bbox_inches='tight', pad_inches=0, dpi=243.6)
-
-
 
 print('total %d images generation complete!' % (iter+1))
 print('Avg. one image process ptime: %.2f, total %d images process ptime: %.2f' % (np.mean(per_ptime), (iter+1), total_ptime))
