@@ -33,13 +33,14 @@ def generator(x, ngf=64, isTrain=True, reuse=False):
         deconv4 = tf.layers.batch_normalization(tf.layers.conv2d_transpose(tf.nn.relu(deconv3), ngf * 8, [4, 4], strides=(2, 2), padding='same', kernel_initializer=w_init, bias_initializer=b_init), training=isTrain)
         deconv4 = tf.concat([deconv4, conv4], 3)
         deconv5 = tf.layers.batch_normalization(tf.layers.conv2d_transpose(tf.nn.relu(deconv4), ngf * 4, [4, 4], strides=(2, 2), padding='same', kernel_initializer=w_init, bias_initializer=b_init), training=isTrain)
+        #if U-Net
         deconv5 = tf.concat([deconv5, conv3], 3)
         deconv6 = tf.layers.batch_normalization(tf.layers.conv2d_transpose(tf.nn.relu(deconv5), ngf * 2, [4, 4], strides=(2, 2), padding='same', kernel_initializer=w_init, bias_initializer=b_init), training=isTrain)
         #if U-Net
-        #deconv6 = tf.concat([deconv6, conv2], 3)
+        deconv6 = tf.concat([deconv6, conv2], 3)
         deconv7 = tf.layers.batch_normalization(tf.layers.conv2d_transpose(tf.nn.relu(deconv6), ngf, [4, 4], strides=(2, 2), padding='same', kernel_initializer=w_init, bias_initializer=b_init), training=isTrain)
         #if U-Net
-        #deconv7 = tf.concat([deconv7, conv1], 3)
+        deconv7 = tf.concat([deconv7, conv1], 3)
         deconv8 = tf.layers.conv2d_transpose(tf.nn.relu(deconv7), 1, [4, 4], strides=(2, 2), padding='same', kernel_initializer=w_init, bias_initializer=b_init)
         deconv9 = tf.concat([deconv8, deconv8], 3)
         deconv9 = tf.concat([deconv8, deconv9], 3)
