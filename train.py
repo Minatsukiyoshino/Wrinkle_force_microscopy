@@ -4,7 +4,7 @@ import numpy as np
 import VGG
 os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 parser = argparse.ArgumentParser()
-parser.add_argument('--dataset', required=False, default='WFM',  help='')
+parser.add_argument('--dataset', required=False, default='wrinkle_to_force_1',  help='1,2,3,4,5')
 parser.add_argument('--train_subfolder', required=False, default='train',  help='')
 parser.add_argument('--test_subfolder', required=False, default='val',  help='')
 parser.add_argument('--batch_size', type=int, default=1, help='train batch size')
