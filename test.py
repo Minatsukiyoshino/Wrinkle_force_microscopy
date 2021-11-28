@@ -16,7 +16,7 @@ def calcForce(intensity):
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--dataset', required=False, default='WFM',  help='')
+parser.add_argument('--dataset', required=False, default='wrinkle_to_force_1',  help='1,2,3,4,5')
 parser.add_argument('--input_size', type=int, default=256, help='input image size')
 parser.add_argument('--test_subfolder', required=False, default='val',  help='')
 parser.add_argument('--ngf', type=int, default=64)
