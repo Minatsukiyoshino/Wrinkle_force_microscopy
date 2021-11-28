@@ -16,7 +16,7 @@ def calcForce(intensity):
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--dataset', required=False, default='wrinkle_to_force_1',  help='')
+parser.add_argument('--dataset', required=False, default='WFM',  help='')
 parser.add_argument('--input_size', type=int, default=256, help='input image size')
 parser.add_argument('--test_subfolder', required=False, default='val',  help='')
 parser.add_argument('--ngf', type=int, default=64)
@@ -56,7 +56,7 @@ print('test start!')
 per_ptime = []
 total_start_time = time.time()
 
-for iter in range(test_loader.shape[0]):
+for iter_x in range(test_loader.shape[0]):
     per_start_time = time.time()
     train_img = test_loader.next_batch()
     x_ = train_img
@@ -68,7 +68,7 @@ for iter in range(test_loader.shape[0]):
     per_end_time = time.time()
     per_ptime.append(per_end_time - per_start_time)
 
-for iter_2 in range(test_loader.shape[0]):
+for iter_y in range(test_loader.shape[0]):
     per_start_time = time.time()
     train_img_rotate = test_loader.next_batch_rotate()
     x_rotate = train_img_rotate
@@ -95,7 +95,9 @@ for iter in range(533):
     img_x = cv2.cvtColor(img_x, cv2.COLOR_BGR2GRAY)
     img_y = cv2.rotate(opt.dataset + '_results/test_results/force_y' + "%04d.png" % (iter)), cv2.ROTATE_90_COUNTERCLOCKWISE)
     img_y = cv2.cvtColor(img_y, cv2.COLOR_BGR2GRAY)
+    #######microscope images folder########
     img_cell = cv2.imread(opt.dataset + '_results/test_results/cell' + "%04d.jpg" % (iter))
+    #######################################
     #plt.imshow(img_cell)
     #plt.show()
     data_fx = np.array(cv2.resize(img_x, (26, 26)))
@@ -147,6 +149,8 @@ for iter in range(533):
     cb.update_ticks()
     ax2.set_title('Pa',fontdict=font)
     plt.axis("off")
+    if not os.path.isdir('force'):
+       os.mkdir('force')
     fig.savefig("force/%d.png" %iter, format="png", bbox_inches='tight', pad_inches=0, dpi=243.6)
 
 print('total %d images generation complete!' % (iter+1))
