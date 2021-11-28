@@ -4,7 +4,7 @@ import numpy as np
 import VGG
 os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 parser = argparse.ArgumentParser()
-parser.add_argument('--dataset', required=False, default='cell_to_force_3',  help='')
+parser.add_argument('--dataset', required=False, default='WFM',  help='')
 parser.add_argument('--train_subfolder', required=False, default='train',  help='')
 parser.add_argument('--test_subfolder', required=False, default='val',  help='')
 parser.add_argument('--batch_size', type=int, default=1, help='train batch size')
@@ -15,7 +15,7 @@ parser.add_argument('--input_size', type=int, default=256, help='input size')
 parser.add_argument('--crop_size', type=int, default=256, help='crop size (0 is false)')
 parser.add_argument('--resize_scale', type=int, default=286, help='resize scale (0 is false)')
 parser.add_argument('--fliplr', type=bool, default=True, help='random fliplr True or False')
-parser.add_argument('--train_epoch', type=int, default=300, help='number of train epochs')
+parser.add_argument('--train_epoch', type=int, default=100, help='number of train epochs')
 parser.add_argument('--lrD', type=float, default=0.0002, help='learning rate, default=0.0002')
 parser.add_argument('--lrG', type=float, default=0.0002, help='learning rate, default=0.0002')
 parser.add_argument('--L1_lambda', type=float, default=100, help='lambda for L1 loss')
@@ -127,28 +127,17 @@ for epoch in range(opt.train_epoch):
         else:
             x_ = train_img[:, :, 0:img_size, :]
             y_ = train_img[:, :, img_size:, :]
-
         x_ = util.norm(x_)
         y_ = util.norm(y_)
-        if (epoch>5):
-            NUM = 1
-        else:
-            NUM = 5
-
-        #for i in range(5):
         loss_d_, _ = sess.run([D_loss, D_optim], {x: x_, y: y_})
         D_losses.append(loss_d_)
         train_hist['D_losses'].append(loss_d_)
-
         loss_g_, _ = sess.run([G_loss, G_optim], {x: x_, y: y_})
         G_losses.append(loss_g_)
         train_hist['G_losses'].append(loss_g_)
-
         num_iter += 1
-
     epoch_end_time = time.time()
     per_epoch_ptime = epoch_end_time - epoch_start_time
-
     print('[%d/%d] - ptime: %.2f, loss_d: %.3f, loss_g: %.3f' % ((epoch + 1), opt.train_epoch, per_epoch_ptime, np.mean((D_losses)), np.mean(G_losses)))
     fixed_p = root + 'Fixed_results/' + model + str(epoch + 1) + '.png'
     outputs = sess.run(G, {x: fixed_x_})
