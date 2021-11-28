@@ -1,6 +1,6 @@
 # Wrinkle_force_microscopy
 ## For the review of Article "Wrinkle force microscopy: a new machine learningbased approach to predict cell mechanics from images".
-## A Graphic card with 6GB VRAM is needed.
+## A Graphic card with at least 6GB VRAM is recommended.
 ## Environment:
       with Python 3.5 and CUDA 9.0:
             Tensorflow 1.13.0rc2,
