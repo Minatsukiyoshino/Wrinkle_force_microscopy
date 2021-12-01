@@ -16,9 +16,9 @@ def calcForce(intensity):
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--dataset', required=False, default='wrinkle_to_force_1',  help='1,2,3,4,5')
+parser.add_argument('--dataset', required=False, default='wrinkle_to_force_1',  help='')
 parser.add_argument('--input_size', type=int, default=256, help='input image size')
-parser.add_argument('--test_subfolder', required=False, default='val',  help='')
+parser.add_argument('--test_subfolder', required=False, default='test',  help='')
 parser.add_argument('--ngf', type=int, default=64)
 parser.add_argument('--save_root', required=False, default='results', help='results save path')
 parser.add_argument('--inverse_order', type=bool, default=True, help='True: [input, target], False: [target, input]')
@@ -32,8 +32,8 @@ if not os.path.isdir(opt.dataset + '_results/test_results/force_x'):
     os.mkdir(opt.dataset + '_results/test_results/force_x')
 if not os.path.isdir(opt.dataset + '_results/test_results/force_y'):
     os.mkdir(opt.dataset + '_results/test_results/force_y')
-if not os.path.isdir(opt.dataset + '_results/test_results/cell'):
-    os.mkdir(opt.dataset + '_results/test_results/cell')
+if not os.path.isdir('results'):
+    os.mkdir('results')
 
 # data_loader
 test_loader = util.data_loader('data/' + opt.dataset + '/' + opt.test_subfolder, 1, shuffle=False)
@@ -56,7 +56,7 @@ print('test start!')
 per_ptime = []
 total_start_time = time.time()
 
-for iter_x in range(test_loader.shape[0]):
+for iter in range(test_loader.shape[0]):
     per_start_time = time.time()
     train_img = test_loader.next_batch()
     x_ = train_img
@@ -68,7 +68,7 @@ for iter_x in range(test_loader.shape[0]):
     per_end_time = time.time()
     per_ptime.append(per_end_time - per_start_time)
 
-for iter_y in range(test_loader.shape[0]):
+for iter_2 in range(test_loader.shape[0]):
     per_start_time = time.time()
     train_img_rotate = test_loader.next_batch_rotate()
     x_rotate = train_img_rotate
@@ -83,27 +83,19 @@ for iter_y in range(test_loader.shape[0]):
 total_end_time = time.time()
 total_ptime = total_end_time - total_start_time
 
-########################draw################################
+########################draw#############################################################################
 def calcForce(intensity):
     return 50.0*np.tan((intensity - 255.0/2.0)/81.2)
 um_pix = 0.1076
-for iter in range(533):
-    #img = io.imread(os.path.join(test_path,"%d.png"%i),as_gray = as_gray)
-    #name = list[i]
-    #img_x = io.imread(os.path.join(opt.dataset + '_results/test_results/force_x/', "%04d.png"%i ))
-    img_x = cv2.imread(opt.dataset + '_results/test_results/force_x' + "%04d.png" % (iter))
-    img_x = cv2.cvtColor(img_x, cv2.COLOR_BGR2GRAY)
-    img_y = cv2.rotate(opt.dataset + '_results/test_results/force_y' + "%04d.png" % (iter)), cv2.ROTATE_90_COUNTERCLOCKWISE)
-    img_y = cv2.cvtColor(img_y, cv2.COLOR_BGR2GRAY)
-    #######microscope images folder########
-    img_cell = cv2.imread(opt.dataset + '_results/test_results/cell' + "%04d.jpg" % (iter))
-    #######################################
-    #plt.imshow(img_cell)
-    #plt.show()
+for iter in range(3):
+    img_x = cv2.imread(opt.dataset + '_results/test_results/force_x/' + "%04d.png" % iter)
+    #img_x = cv2.cvtColor(img_x, cv2.COLOR_BGR2GRAY)
+    img_y = cv2.rotate(cv2.imread(opt.dataset + '_results/test_results/force_y/' + "%04d.png" % iter), cv2.ROTATE_90_COUNTERCLOCKWISE)
+    #img_y = cv2.cvtColor(img_y, cv2.COLOR_BGR2GRAY)
+    img_cell = cv2.imread('data/' + opt.dataset + '/cell/' + "%04d.png" % iter)
     data_fx = np.array(cv2.resize(img_x, (26, 26)))
     img_cell = cv2.resize(img_cell, (900, 900))
     data_fy = np.array(cv2.resize(img_y, (26, 26)))
-    #for j in range(26):
     x=[]
     y=[]
     fx=[]
@@ -113,12 +105,17 @@ for iter in range(533):
             for i in range(26):
                 x.append (32.0*i + 48.0)
                 y.append (32.0*j + 48.0)
+
                 gid = 26*j + i
+
                 tfx= calcForce(data_fx[j][i])
                 tfy= calcForce(data_fy[j][i])
+
                 fx.append (tfx)
                 fy.append (tfy)
                 fa.append (np.sqrt(tfx**2.0 + tfy**2.0))
+
+
     x  = np.array(x)
     y  = np.array(y)
     fx = np.array(fx)
@@ -126,13 +123,13 @@ for iter in range(533):
     #fig = plt.figure(frameon=False)
     fig = plt.figure(frameon=False)
     img = img_cell
-    #####if show cell images###########
-    #plt.imshow(img, cmap = "gray")
+
+    plt.imshow(img, cmap = "gray")
     plt.quiver(x, y, fx, fy, fa, \
-            cmap=plt.cm.jet, width=0.005, scale_units='dots', norm=mpl.colors.Normalize(vmin = 0.0, vmax = 200.0))
+            cmap=plt.cm.jet, width=0.005, scale_units='dots', norm=mpl.colors.Normalize(vmin = 0.0, vmax = 150.0))
     plt.quiver(x, y, fx, fy, width=0.005, scale_units='dots', edgecolor='w', facecolor='None', linewidth=0.2)
     faa = plt.quiver(x, y, fx, fy, fa, \
-            cmap=plt.cm.jet, width=0.005, scale_units='dots', norm=mpl.colors.Normalize(vmin = 0.0, vmax = 200.0))
+            cmap=plt.cm.jet, width=0.005, scale_units='dots', norm=mpl.colors.Normalize(vmin = 0.0, vmax = 150.0))
     #ax = fa.flatten()
     #fig.colorbar(ax)
     #plt.colorbar(mpl.cm.ScalarMappable(norm=mpl.colors.Normalize(vmin = 0.0, vmax = 150.0), cmap=plt.cm.jet),ax = plt.axes())
@@ -144,14 +141,15 @@ for iter in range(533):
         'size'   : 20,
         }
     ax2 = cb.ax
-    tick_locator = ticker.MaxNLocator(nbins=4)
+
+    tick_locator = ticker.MaxNLocator(nbins=3)
     cb.locator = tick_locator
     cb.update_ticks()
     ax2.set_title('Pa',fontdict=font)
     plt.axis("off")
-    if not os.path.isdir('force'):
-       os.mkdir('force')
-    fig.savefig("force/%d.png" %iter, format="png", bbox_inches='tight', pad_inches=0, dpi=243.6)
+    fig.savefig("results/%d.png" %iter, format="png", bbox_inches='tight', pad_inches=0, dpi=243.6)
+
+
 
 print('total %d images generation complete!' % (iter+1))
 print('Avg. one image process ptime: %.2f, total %d images process ptime: %.2f' % (np.mean(per_ptime), (iter+1), total_ptime))
