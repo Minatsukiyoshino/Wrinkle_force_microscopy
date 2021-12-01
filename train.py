@@ -1,7 +1,6 @@
 import os, time, pickle, argparse, network, util
 import tensorflow as tf
 import numpy as np
-import VGG
 os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 parser = argparse.ArgumentParser()
 parser.add_argument('--dataset', required=False, default='wrinkle_to_force_1',  help='1,2,3,4,5')
