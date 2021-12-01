@@ -105,17 +105,12 @@ for iter in range(3):
             for i in range(26):
                 x.append (32.0*i + 48.0)
                 y.append (32.0*j + 48.0)
-
                 gid = 26*j + i
-
                 tfx= calcForce(data_fx[j][i])
                 tfy= calcForce(data_fy[j][i])
-
                 fx.append (tfx)
                 fy.append (tfy)
                 fa.append (np.sqrt(tfx**2.0 + tfy**2.0))
-
-
     x  = np.array(x)
     y  = np.array(y)
     fx = np.array(fx)
@@ -123,7 +118,6 @@ for iter in range(3):
     #fig = plt.figure(frameon=False)
     fig = plt.figure(frameon=False)
     img = img_cell
-
     plt.imshow(img, cmap = "gray")
     plt.quiver(x, y, fx, fy, fa, \
             cmap=plt.cm.jet, width=0.005, scale_units='dots', norm=mpl.colors.Normalize(vmin = 0.0, vmax = 150.0))
